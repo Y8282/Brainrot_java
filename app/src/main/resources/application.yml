@@ -7,9 +7,9 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mariadb://localhost:3306/test
+    url: jdbc:mariadb://localhost:3306/brainrot
     username: root
-    password: 123
+    password: choi914296!
     driver-class-name: org.mariadb.jdbc.Driver # 드라이버 클래스 추가
   jpa:
     show-sql: true
