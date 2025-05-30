@@ -19,6 +19,8 @@ class ImageRequest(BaseModel):
     arms: str
     legs: str
     tail: str
+    add: str
+    drs: str
 
 
 # 환경변수로 DB 정보 설정
@@ -51,17 +53,11 @@ async def save_image(request: ImageRequest):
         request.arms,
         request.legs,
         request.tail,
+        request.add,
+        request.drs,
     )
 
-    imageUrl = ai.callAI()
-
-    # 이미지 가져오기
-    try:
-        resp = requests.get(imageUrl)
-        resp.raise_for_status()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"이미지 조회 실패: {e}")
-    img_bytes = resp.content
+    img_bytes = ai.callAI()
 
     # DB에 저장
     try:
