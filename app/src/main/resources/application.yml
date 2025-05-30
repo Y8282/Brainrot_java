@@ -13,8 +13,8 @@ springdoc:
     path: /swagger-ui.html
 
 mybatis:
-  config-location: classpath:mapper/config/mapper-config.xml
   mapper-locations: classpath:mapper/login/*.xml
+  type-aliases-package: com.example.login.Entity
 ---
 spring:
   config:
