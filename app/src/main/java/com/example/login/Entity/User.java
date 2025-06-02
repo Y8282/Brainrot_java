@@ -27,26 +27,30 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private String email;
 
+    // 사용자 권한 반환환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
 
+    // 계정 만료x
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
+    
+    // 계정 잠김
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
+    
+    // 비밀번호 만료
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
+    // 계정 활성화
     @Override
     public boolean isEnabled() {
         return true;

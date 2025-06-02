@@ -8,4 +8,11 @@
         WHERE username = #{username}
         ]]>
     </select>
+
+    <insert id="insertUser" parameterType="com.example.login.Entity.User" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+            INSERT INTO users (username, password, email)
+            VALUES (#{username}, #{password}, #{email})
+        ]]>
+    </insert>
 </mapper>

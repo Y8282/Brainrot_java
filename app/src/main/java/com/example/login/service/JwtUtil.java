@@ -3,7 +3,6 @@ package com.example.login.service;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -44,6 +43,4 @@ public class JwtUtil {
     private boolean isTokenExpired(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration().before(new Date());
     }
-} 
-    
-
+}

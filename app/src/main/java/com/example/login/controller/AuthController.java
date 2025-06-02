@@ -19,6 +19,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request) {
         try {
+            System.out.println("@@@@@@@@@@@@@@@@@" + request.getUsername());
             if (request.getUsername() == null || request.getPassword() == null) {
                 return ResponseEntity.badRequest()
                         .body(new ApiResponse("400", "username 또는 password가 누락되었습니다."));
@@ -38,11 +39,49 @@ public class AuthController {
                     .body(new ApiResponse("500", "서버 오류: " + e.getMessage()));
         }
     }
-}
 
-@Data
-class LoginRequest {
-    private String username;
-    private String password;
-    private String requestId;
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse> signup(@RequestBody SignupRequest request) {
+        try {
+            if (request.getUsername() == null || request.getEmail() == null || request.getPassword() == null) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("400", "필수 입력값이 누락되었습니다."));
+            }
+            // 이메일 형식 검증
+            if (!request.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("400", "유효한 이메일 형식이 아닙니다."));
+            }
+            User user = new User();
+            user.setUsername(request.getUsername());
+            user.setEmail(request.getEmail());
+            user.setPassword(request.getPassword());
+            boolean success = authService.registerUser(user);
+            if (success) {
+                return ResponseEntity.ok(new ApiResponse("000", "회원가입 성공"));
+            }
+            return ResponseEntity.status(409)
+                    .body(new ApiResponse("409", "이미 존재하는 사용자입니다."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(new ApiResponse("500", "서버 오류: " + e.getMessage()));
+        }
+    }
+
+    @Data
+    static class SignupRequest {
+        private String username;
+        private String email;
+        private String password;
+        private String requestId;
+    }
+
+    @Data
+    static class LoginRequest {
+        private String username;
+        private String password;
+        private String requestId;
+    }
+
 }

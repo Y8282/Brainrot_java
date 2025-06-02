@@ -1,10 +1,27 @@
 spring:
   profiles:
     active: local # 기본 활성화 profile
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kkang58003@gmail.com
+    password: ${GO_PASS}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 jwt:
   secret: ${JWT_SECRET}
-  expirationMs: 86400000
+  expirationMs: 20
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    com.example: DEBUG
+    org.mybatis: DEBUG
 
 springdoc:
   api-docs:
@@ -13,7 +30,7 @@ springdoc:
     path: /swagger-ui.html
 
 mybatis:
-  mapper-locations: classpath:mapper/login/*.xml
+  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.example.login.Entity
 ---
 spring:
@@ -21,7 +38,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mariadb://localhost:3306/${DB_NAME}
+    url: jdbc:mariadb://localhost:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.mariadb.jdbc.Driver
