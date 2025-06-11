@@ -4,17 +4,24 @@ import org.springframework.stereotype.Service;
 
 import com.example.login.Entity.User;
 import com.example.login.mapper.LoginMapper;
+import com.example.login.model.ApiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class AuthService {
     @Autowired
     private LoginMapper loginMapper;
+
+    @Autowired
+    private EmailService emailService;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -59,5 +66,43 @@ public class AuthService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public ApiResponse sendCode(String email) {
+        try {
+            // 이메일 중복시 반려 근데 이걸 User Table에서 중복검사 해야할 듯
+            if (true) {
+                String code = createCode();
+                emailService.sendEmail(email, code);
+                emailService.emailCodeSave(email, code);
+                return new ApiResponse("000", "성공적으로 code 보냄 및 저장됨");
+            } else {
+                return new ApiResponse("400", "이미 가입된 이메일 입니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse("400", "이메일 보내던 중 오류 또는 저장 중 오류");
+        }
+    }
+
+    private String createCode() {
+        int lenth = 6;
+        try {
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < lenth; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("인증 코드 생성 실패", e);
+        }
+    }
+
+    public ApiResponse verifyCode(String email, String code) {
+        String findCode = emailService.getCode(email);
+        boolean isVerified = code.equals(findCode);
+        return new ApiResponse("000", String.valueOf(isVerified));
     }
 }

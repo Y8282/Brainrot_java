@@ -4,8 +4,13 @@ import com.example.login.Entity.User;
 import com.example.login.model.ApiResponse;
 import com.example.login.service.AuthService;
 import com.example.login.service.JwtUtil;
+
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +74,19 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/emails/verify")
+    public ResponseEntity<ApiResponse> sendCode(@Valid @RequestBody SendCodeRequest reqeustParam) {
+        ApiResponse response = authService.sendCode(reqeustParam.getEmail());
+        return ResponseEntity.status(500)
+                .body(response);
+    }
+
+    @GetMapping("/emails/verify")
+    public ResponseEntity<ApiResponse> verifyCode(@Valid @RequestBody VerifyCodeRequest reqeustParam) {
+        ApiResponse response = authService.verifyCode(reqeustParam.getEmail(), reqeustParam.getCode());
+        return ResponseEntity.ok(response);
+    }
+
     @Data
     static class SignupRequest {
         private String username;
@@ -82,6 +100,17 @@ public class AuthController {
         private String username;
         private String password;
         private String requestId;
+    }
+
+    @Data
+    static class SendCodeRequest {
+        private String email;
+    }
+
+    @Data
+    static class VerifyCodeRequest {
+        private String email;
+        private String code;
     }
 
 }
