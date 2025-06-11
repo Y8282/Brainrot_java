@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.login.Entity.EmailVerify;
+import com.example.login.mapper.EmailMapper;
 import com.example.login.repository.EmailRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
     private final EmailRepository emailRepo;
+
+    private final EmailMapper emailMapper;
 
     private static final String TITLE = "[DNA] Email Verification Code";
     private static final String TEXT_PREFIX = "Please copy and enter the email verification code listed below.\nVerification Code: ";
@@ -49,7 +52,7 @@ public class EmailService {
     public void emailCodeSave(String email, String code) {
         LocalDateTime expireAt = LocalDateTime.now().plusHours(24);
         EmailVerify emailVerify = new EmailVerify(email, code, expireAt);
-        emailRepo.upsert(emailVerify);
+        emailMapper.codeUpsert(emailVerify);
     }
 
     public boolean isEmail(String email) {
