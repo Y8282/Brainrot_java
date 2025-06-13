@@ -15,4 +15,18 @@
             VALUES (#{username}, #{password}, #{email})
         ]]>
     </insert>
+
+    <select id="selectUserByEmail" resultType="com.example.login.Entity.User" parameterType="java.util.Map">
+        <![CDATA[
+        SELECT username, password, email
+        FROM users
+        WHERE email = #{email}
+        ]]>
+    </select>
+
+    <update id="changePassword" parameterType="java.util.Map">
+        <![CDATA[
+            update users set password = #{password} where email = #{email}
+        ]]>
+    </update>
 </mapper>

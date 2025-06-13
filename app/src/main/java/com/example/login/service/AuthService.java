@@ -39,6 +39,8 @@ public class AuthService {
                 return null; // 사용자 없음
             }
             // 비밀번호 검증 (실제로는 BCrypt 등으로 해시 비교)
+            System.out.println("Password @@@@@@@@@@@@@@@@@@@@@" + password);
+            System.out.println("getPass @@@@@@@@@@@@@@@@@@@@@" + user.getPassword());
             if (!passwordEncoder.matches(password, user.getPassword())) {
                 return null; // 비밀번호 불일치
             }
@@ -68,10 +70,34 @@ public class AuthService {
         }
     }
 
+    public boolean changePass(String email, String password) {
+        try {
+            Map<String, Object> authParams = new HashMap<>();
+            authParams.put("email", email);
+            User oldUser = loginMapper.selectUserByEmail(authParams);
+            // 기존 비번과 중복 여부 확인
+            if (passwordEncoder.matches(password, oldUser.getPassword())) {
+                return false;
+            }
+            String passwordHash = passwordEncoder.encode(password);
+            Map<String, Object> changeParams = new HashMap<>();
+            changeParams.put("email", email);
+            changeParams.put("password", passwordHash);
+            loginMapper.changePassword(changeParams);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public ApiResponse sendCode(String email) {
         try {
-            // 이메일 중복시 반려 근데 이걸 User Table에서 중복검사 해야할 듯
-            if (true) {
+            Map<String, Object> authParams = new HashMap<>();
+            authParams.put("email", email);
+            User user = loginMapper.selectUserByEmail(authParams);
+            // 이메일 인증 때에 중복검사
+            if (user != null) {
                 String code = createCode();
                 emailService.sendEmail(email, code);
                 emailService.emailCodeSave(email, code);
@@ -100,9 +126,9 @@ public class AuthService {
         }
     }
 
-    public ApiResponse verifyCode(String email, String code) {
+    public boolean verifyCode(String email, String code) {
         String findCode = emailService.getCode(email);
         boolean isVerified = code.equals(findCode);
-        return new ApiResponse("000", String.valueOf(isVerified));
+        return isVerified;
     }
 }
