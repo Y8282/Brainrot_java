@@ -33,8 +33,9 @@ public class AuthService {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("username", username);
-            System.out.println("AuthService @@@@@@@@@@@@@@@@@" + username);
+
             User user = loginMapper.selectUserByUsername(params);
+
             if (user == null) {
                 return null; // 사용자 없음
             }

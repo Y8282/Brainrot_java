@@ -10,6 +10,9 @@ import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.io.FileOutputStream;
+import java.util.Base64;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +27,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request) {
         try {
-            System.out.println("@@@@@@@@@@@@@@@@@" + request.getUsername());
             if (request.getUsername() == null || request.getPassword() == null) {
                 return ResponseEntity.badRequest()
                         .body(new ApiResponse("400", "username 또는 password가 누락되었습니다."));
@@ -35,6 +37,8 @@ public class AuthController {
                 ApiResponse response = new ApiResponse("000", "로그인 성공");
                 response.getResultData().put("requestId", request.getRequestId());
                 response.getResultData().put("token", token);
+                response.getResultData().put("username", request.getUsername());
+                response.getResultData().put("email", user.getEmail());
                 return ResponseEntity.ok(response);
             }
             return ResponseEntity.ok(new ApiResponse("401", "사용자 인증 실패"));
@@ -100,6 +104,8 @@ public class AuthController {
         private String username;
         private String password;
         private String requestId;
+        private String email;
+        private byte[] profile_image;
     }
 
     @Data
