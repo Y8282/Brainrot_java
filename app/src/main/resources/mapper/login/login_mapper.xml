@@ -16,26 +16,19 @@
         ]]>
     </insert>
 
-    <update id="updateUserImage" parameterType= "com.example.login.Entity.User">
+    <select id="selectUserByEmail" resultType="com.example.login.Entity.User" parameterType="java.util.Map">
         <![CDATA[
-            UPDATE users
-                SET profile_image = #{profile_image}
-                WHERE email = #{email}
-        ]]>
-    </update>
-
-     <select id="selectUserByEmail" resultType="com.example.login.Entity.User" parameterType="java.util.Map">
-        <![CDATA[
-        SELECT *
+        SELECT username, password, email
         FROM users
         WHERE email = #{email}
         ]]>
     </select>
 
-    <select id="selectAllPosts" resultType="java.util.Map">
+
+    <update id="changePassword" parameterType="java.util.Map">
         <![CDATA[
-        SELECT *
-         FROM post
-            ]]>
-    </select>
+            update users set password = #{password} where email = #{email}
+        ]]>
+    </update>
+
 </mapper>

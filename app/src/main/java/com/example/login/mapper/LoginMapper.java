@@ -14,11 +14,9 @@ public interface LoginMapper {
 
     void insertUser(User user);
 
-    int updateUserImage(String email ,byte[] profile_image);
 
-    User selectUserByEmail(String email);
+    User selectUserByEmail(Map<String, Object> params);
 
-    List<Post> selectPostsByail(String email);
+    void changePassword(Map<String, Object> params);
 
-    List<Post> selectAllPosts();
 }

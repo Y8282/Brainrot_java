@@ -5,15 +5,11 @@ import com.example.login.model.ApiResponse;
 import com.example.login.service.AuthService;
 import com.example.login.service.JwtUtil;
 
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.io.FileOutputStream;
-import java.util.Base64;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,17 +74,50 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/change/pass")
+    public ResponseEntity<?> findPass(@Valid @RequestBody ChangePassRequest reqeustParam) {
+        try {
+            boolean auth = authService.verifyCode(reqeustParam.getEmail(), reqeustParam.getCode());
+            if (auth) {
+                boolean success = authService.changePass(reqeustParam.getEmail(), reqeustParam.getPassword());
+                if (success) {
+                    return ResponseEntity.ok(new ApiResponse("000", "비밀번호가 성공적으로 변경됐습니다."));
+                }
+                return ResponseEntity.status(400).body(new ApiResponse("400", "기존에 사용했던 비밀번호 입니다."));
+            } else
+                return ResponseEntity.status(500).body(new ApiResponse("500", "비상 비상 일어날 수 없는 가능성!!"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(new ApiResponse("500", "서버 오류: " + e.getMessage()));
+        }
+    }
+
     @PostMapping("/emails/verify")
     public ResponseEntity<ApiResponse> sendCode(@Valid @RequestBody SendCodeRequest reqeustParam) {
-        ApiResponse response = authService.sendCode(reqeustParam.getEmail());
-        return ResponseEntity.status(500)
-                .body(response);
+        try {
+            ApiResponse response = authService.sendCode(reqeustParam.getEmail());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(new ApiResponse("500", "서버 오류: " + e.getMessage()));
+        }
     }
 
     @GetMapping("/emails/verify")
     public ResponseEntity<ApiResponse> verifyCode(@Valid @RequestBody VerifyCodeRequest reqeustParam) {
-        ApiResponse response = authService.verifyCode(reqeustParam.getEmail(), reqeustParam.getCode());
-        return ResponseEntity.ok(response);
+        try {
+            boolean response = authService.verifyCode(reqeustParam.getEmail(), reqeustParam.getCode());
+            if (response)
+                return ResponseEntity.ok(new ApiResponse("000", "인증번호가 일치하여 확인이 되었습니다."));
+            else
+                return ResponseEntity.status(400).body(new ApiResponse("400", "인증번호가 일치하지 않습니다."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(new ApiResponse("500", "서버 오류: " + e.getMessage()));
+        }
     }
 
     @Data
@@ -106,6 +135,13 @@ public class AuthController {
         private String requestId;
         private String email;
         private byte[] profile_image;
+    }
+
+    @Data
+    static class ChangePassRequest {
+        private String email;
+        private String code;
+        private String password;
     }
 
     @Data
