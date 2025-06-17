@@ -1,0 +1,97 @@
+spring:
+  profiles:
+    active: local # 기본 활성화 profile
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: brainrotgen789@gmail.com
+    password: ${GO_PASS}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000 # 30 * 60 * 1000 == 30분
+
+jwt:
+  secret: ${JWT_SECRET}
+  expirationMs: 20
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    com.example: DEBUG
+    org.mybatis: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.login.Entity
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mariadb://localhost:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+  logging:
+    level:
+      root: debug
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mariadb://dev-server:3306/dev_db
+    username: devuser
+    password: devpass
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+  logging:
+    level:
+      root: info
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mariadb://prod-server:3306/prod_db
+    username: produser
+    password: prodpass
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+  logging:
+    level:
+      root: warn
