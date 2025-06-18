@@ -36,21 +36,24 @@ springdoc:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.example.login.Entity
+  type-aliases-package: com.example
+  configuration:
+    jdbc-type-for-null: NULL
+    map-underscore-to-camel-case: true
 ---
 spring:
   config:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mariadb://localhost:${DB_PORT}/${DB_NAME}
+    url: jdbc:mariadb://localhost:${DB_PORT}/${DB_NAME}?serverTimezone=Asia/Seoul
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect

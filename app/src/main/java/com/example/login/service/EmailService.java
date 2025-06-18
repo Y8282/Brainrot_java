@@ -1,6 +1,8 @@
 package com.example.login.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -10,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.login.Entity.EmailVerify;
 import com.example.login.mapper.EmailMapper;
-import com.example.login.repository.EmailRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailService {
 
     private final JavaMailSender emailSender;
-
-    private final EmailRepository emailRepo;
 
     private final EmailMapper emailMapper;
 
@@ -56,12 +55,16 @@ public class EmailService {
     }
 
     public boolean isEmail(String email) {
-        Optional<EmailVerify> result = emailRepo.findByEmail(email);
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+        Optional<EmailVerify> result = Optional.ofNullable(emailMapper.verifyEmail(params));
         return result.isEmpty();
     }
 
     public String getCode(String email) {
-        Optional<EmailVerify> result = emailRepo.findByEmail(email);
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+        Optional<EmailVerify> result = Optional.ofNullable(emailMapper.verifyEmail(params));
         return result.get().getCode();
     }
 

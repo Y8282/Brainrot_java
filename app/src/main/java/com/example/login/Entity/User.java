@@ -10,27 +10,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "users")
+
 @Data
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-
-    @Column(unique = true, nullable = false)
     private String username;
-
-    @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
     private String email;
-
-    @Column(nullable = true, columnDefinition = "LONGBLOB")
     private byte[] profile_image;
 
-    // 사용자 권한 반환환
+    // 사용자 권한 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();

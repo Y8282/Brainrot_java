@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.image.mapper.ImageMapper">
+
+    <select id="selectAllPosts" resultType="com.example.image.Entity.PostDto">
+        <![CDATA[
+             SELECT 
+                 a.id,                             -- 글 ID
+                 a.title,                          -- 글 제목
+                 a.content,                        -- 글 내용
+                 a.author,                         -- 작성자(이메일)
+                 a.imgId,                          -- 이미지 ID
+                 a.created_at AS createdAt,        -- 작성일
+                 a.updated_at AS updatedAt,        -- 수정일
+                 b.image,                          -- 이미지
+                 c.username                        -- 작성자(이름)
+             FROM post a
+             LEFT JOIN brainrot_image b ON b.id = a.imgId 
+             LEFT JOIN users c ON c.email = a.author
+                ]]>
+    </select>
+
+    <select id = "selectAllComments" resultType="com.example.image.Entity.Comment">
+        <![CDATA[
+             WITH RECURSIVE comment_tree                   -- 재귀 함수  (나중에 성능 느려지면 업데이트)
+                (
+                 id,                               -- 댓글 ID
+                 postId,                           -- 글 ID
+                 commentId,                        -- 부모 댓글 ID
+                 userId,                           -- 유저 ID
+                 content,                          -- 댓글 내용
+                 created_at                        -- 작성일           
+                ) AS (
+             SELECT 
+                 id,                               -- 댓글 ID
+                 postId,                           -- 글 ID
+                 commentId,                        -- 부모 댓글 ID
+                 userId,                           -- 유저 ID
+                 content,                          -- 댓글 내용
+                 created_at                        -- 작성일   
+                FROM comment
+             WHERE 
+                 commentId IS NULL 
+                 AND 
+                 postId = #{postId}
+
+             UNION ALL
+
+             SELECT 
+                 c.id,                               -- 댓글 ID
+                 c.postId,                           -- 글 ID
+                 c.commentId,                        -- 부모 댓글 ID
+                 c.userId,                           -- 유저 ID
+                 c.content,                          -- 댓글 내용
+                 c.created_at                        -- 작성일   
+                FROM comment c
+             INNER JOIN comment_tree ct ON c.commentId = ct.id
+                )
+             SELECT
+                 id,                               -- 댓글 ID
+                 postId,                           -- 글 ID
+                 commentId,                        -- 부모 댓글 ID
+                 userId,                           -- 유저 ID
+                 content,                          -- 댓글 내용
+                 created_at AS createdAt           -- 작성일   
+       FROM comment_tree ORDER BY createdAt ASC;
+            ]]>
+    </select>
+
+    <select id ="selectimage" resultType="com.example.image.Entity.BrainrotImage">
+        <![CDATA[
+            SELECT * FROM brainrot_image where id = #{id};
+        ]]>
+    </select>
+
+    <select id = "selectAllComment" resultType = "com.example.image.Entity.Comment">
+        <![CDATA[
+            SELECT * FROM comment where postId = #{postId};
+        ]]>
+    </select>
+
+</mapper>

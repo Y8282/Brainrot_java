@@ -11,22 +11,13 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "emailVerify")
 @Data
 @NoArgsConstructor
 public class EmailVerify {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(nullable = false)
     private String code;
-
-    @Column(nullable = false, name = "expire_date")
     private LocalDateTime expireDate;
 
     // 생성자

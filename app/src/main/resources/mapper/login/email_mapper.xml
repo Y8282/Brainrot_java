@@ -10,4 +10,11 @@
             expire_date = VALUES(expire_date)
         ]]>
     </insert>
+
+    <select id="verifyEmail" parameterType="com.example.login.Entity.EmailVerify">
+        <![CDATA[
+            SELECT * FROM emailVerify WHERE email = #{email}
+        ]]]>
+    </select>
+
 </mapper>

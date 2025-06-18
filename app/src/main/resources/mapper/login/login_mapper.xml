@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.login.mapper.LoginMapper">
+
+    <select id="jwtByUser" resultType="com.example.login.Entity.User" parameterType="String">
+        <![CDATA[
+        SELECT *
+        FROM users
+        WHERE username = #{username}
+        ]]>
+    </select>
+    
+    
     <select id="selectUserByUsername" resultType="com.example.login.Entity.User" parameterType="map">
         <![CDATA[
         SELECT username , email , password ,profile_image
@@ -18,7 +28,7 @@
 
     <select id="selectUserByEmail" resultType="com.example.login.Entity.User" parameterType="java.util.Map">
         <![CDATA[
-        SELECT username, password, email
+        SELECT *
         FROM users
         WHERE email = #{email}
         ]]>
