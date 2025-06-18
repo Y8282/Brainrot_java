@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.login.mapper.EmailMapper">
+    <insert id="codeUpsert" parameterType="com.example.login.Entity.EmailVerify" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+            INSERT INTO email_verify (id, email, code, expire_date)
+            VALUES (#{id}, #{email}, #{code}, #{expireDate})
+            ON DUPLICATE KEY UPDATE
+            code      = VALUES(code),
+            expire_date = VALUES(expire_date)
+        ]]>
+    </insert>
+</mapper>

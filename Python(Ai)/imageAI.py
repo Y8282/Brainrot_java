@@ -34,7 +34,13 @@ class imageAI:
 
     def callAI(self):
         client = OpenAI()
-        result = client.images.generate(model="gpt-image-1", prompt=self.prompt, n=1)
+        result = client.images.generate(
+            model="gpt-image-1",
+            prompt=self.prompt,
+            n=1,
+            size="1024x1024",
+            quality="low",
+        )
 
         image_base64 = result.data[0].b64_json
         image_bytes = base64.b64decode(image_base64)

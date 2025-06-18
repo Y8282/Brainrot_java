@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.login.mapper.LoginMapper">
+    <select id="selectUserByUsername" resultType="com.example.login.Entity.User" parameterType="map">
+        <![CDATA[
+        SELECT username , email , password ,profile_image
+        FROM users
+        WHERE username = #{username}
+        ]]>
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.login.Entity.User" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+            INSERT INTO users (username, password, email)
+            VALUES (#{username}, #{password}, #{email})
+        ]]>
+    </insert>
+
+    <select id="selectUserByEmail" resultType="com.example.login.Entity.User" parameterType="java.util.Map">
+        <![CDATA[
+        SELECT username, password, email
+        FROM users
+        WHERE email = #{email}
+        ]]>
+    </select>
+
+
+    <update id="changePassword" parameterType="java.util.Map">
+        <![CDATA[
+            update users set password = #{password} where email = #{email}
+        ]]>
+    </update>
+
+</mapper>
