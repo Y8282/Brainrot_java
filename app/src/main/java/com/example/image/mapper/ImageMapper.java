@@ -15,5 +15,9 @@ public interface ImageMapper {
 
     BrainrotImage selectimage(Long id);
 
-    List<Comment> selectAllComments(Integer postId);
+    List<Comment> selectAllComments(int postId);
+
+    void insertComment(Comment comment);
+
+    Comment findParentCommentByUserId(String userId , int postId);
 }

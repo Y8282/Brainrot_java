@@ -4,8 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -127,13 +129,29 @@ public class ImageController {
 
             List<Comment> comments = imageMapper.selectAllComments(request.get("postId"));
             ApiResponse response = new ApiResponse("000", "댓글 불러오기");
-            comments.forEach(comment -> System.out.println("Comment : " + comment));
             response.getResultData().put("comments", comments);
+
+            comments.forEach(comment -> System.out.println("Comment : " + comment));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(new ApiResponse("500", "서버 오류 : " +
                     e.getStackTrace()));
+        }
+    }
+
+    // 댓글 쓰기
+    @PostMapping("/commentsubmit")
+    public ResponseEntity<ApiResponse> commentSubmit(@RequestBody Comment comment) {
+        try {
+            System.out.println("Received comment : " + comment);
+            imageMapper.insertComment(comment);
+            ApiResponse response = new ApiResponse("000", "댓글 추가 성공");
+            response.getResultData().put("postId", comment.getPostId());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse("500", "서버 오류 : " + e.getStackTrace()));
         }
     }
 

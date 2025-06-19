@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Data
 public class Comment {
-    private Long id;
+    private Integer id;
     private int postId;
     private String userId;
     private String content;

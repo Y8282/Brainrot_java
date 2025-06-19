@@ -63,7 +63,7 @@
                  userId,                           -- 유저 ID
                  content,                          -- 댓글 내용
                  created_at AS createdAt           -- 작성일   
-       FROM comment_tree ORDER BY createdAt ASC;
+       FROM comment_tree ORDER BY createdAt DESC;
             ]]>
     </select>
 
@@ -76,6 +76,23 @@
     <select id = "selectAllComment" resultType = "com.example.image.Entity.Comment">
         <![CDATA[
             SELECT * FROM comment where postId = #{postId};
+        ]]>
+    </select>
+
+    <insert id = "insertComment" parameterType="com.example.image.Entity.Comment" useGeneratedKeys= "true" keyProperty="id">
+        <![CDATA[
+            INSERT INTO comment (postId , userId , content , commentId )
+            VALUES (#{postId}, #{userId} , #{content} , #{commentId} )
+        ]]>
+    </insert>
+
+    <select id = "findParentCommentByUserId" resultType="com.example.image.Entity.Comment">
+        <![CDATA[
+            SELECT id , postId , userId , content , commentId , created_at AS createdAt , updated_at AS updatedAt
+            FROM comment
+            WHERE postId = #{postId}  
+            AND   userId = #{userId}
+            LIMIT 1
         ]]>
     </select>
 
