@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.image.Entity.BrainrotImage;
 import com.example.image.Entity.Comment;
+import com.example.image.Entity.Likecheck;
 // import com.example.image.Entity.BrainrotImage;
 import com.example.image.Entity.Post;
 import com.example.image.Entity.PostDto;
@@ -148,10 +149,37 @@ public class ImageController {
             imageMapper.insertComment(comment);
             ApiResponse response = new ApiResponse("000", "댓글 추가 성공");
             response.getResultData().put("postId", comment.getPostId());
+            response.getResultData().put("userId", comment.getUserId());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(new ApiResponse("500", "서버 오류 : " + e.getStackTrace()));
+        }
+    }
+
+    // 하트
+    @PostMapping("/lovepost")
+    public ResponseEntity<ApiResponse> toggleLovePost(@RequestBody Likecheck likecheck) {
+        try {
+            System.out.println("Received post : " + likecheck);
+            
+            boolean existsLove = imageMapper.existsLove(likecheck);
+
+            if (existsLove) {
+                imageMapper.deleteLove(likecheck);
+            } else {
+                imageMapper.insertLove(likecheck);            
+            }
+
+            
+      
+            ApiResponse response = new ApiResponse("000", "토글 하트 성공");
+            response.getResultData().put("postId", likecheck.getPostId());
+            response.getResultData().put("liked", !existsLove);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse("500", "+서버 오류 : " + e.getStackTrace()));
         }
     }
 

@@ -95,5 +95,29 @@
             LIMIT 1
         ]]>
     </select>
+    
+    <insert id="insertLove" parameterType="com.example.image.Entity.Likecheck">
+        <![CDATA[
+            INSERT INTO like_check (userId , postId)
+            VALUES (#{userId} , #{postId})
+        ]]>
+    </insert>
+
+    <select id="existsLove" parameterType="com.example.image.Entity.Likecheck" resultType="boolean">
+        <![CDATA[
+            SELECT COUNT(1) > 0
+            FROM like_check
+            WHERE userId = #{userId}
+            AND   postId = #{postId}
+        ]]>
+    </select>
+
+    <delete id="deleteLove" parameterType="com.example.image.Entity.Likecheck">
+        <![CDATA[
+            DELETE FROM like_check 
+            WHERE userId = #{userId}
+            AND   postId = #{postId}
+        ]]>
+    </delete>
 
 </mapper>
