@@ -1,4 +1,4 @@
-package com.example.image.controller;
+package com.example.post.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,28 +23,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.image.Entity.BrainrotImage;
-import com.example.image.Entity.Comment;
-import com.example.image.Entity.Likecheck;
-// import com.example.image.Entity.BrainrotImage;
-import com.example.image.Entity.Post;
-import com.example.image.Entity.PostDto;
-import com.example.image.mapper.ImageMapper;
-import com.example.login.Entity.User;
-import com.example.login.mapper.LoginMapper;
+import com.example.post.Entity.BrainrotImage;
+import com.example.post.Entity.Comment;
+import com.example.post.Entity.Likecheck;
 // import com.example.image.service.ImageService;
 import com.example.login.model.ApiResponse;
+import com.example.post.Entity.PostDto;
+import com.example.post.mapper.PostMapper;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/image")
+@RequestMapping("/api/post")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*") // Cors 추가하기 귀찮아서 일단 이렇게만 해 놓음.
 public class ImageController {
-    private final ImageMapper imageMapper;
+    private final PostMapper postMapper;
     // private final ImageService imageService;
 
     // @PostMapping("/generate")
@@ -63,7 +58,7 @@ public class ImageController {
     // 이미지 가져오기 -> image.network
     @GetMapping(value = "/raw/{id}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public ResponseEntity<byte[]> fetchRaw(@PathVariable Long id) {
-        BrainrotImage ent = imageMapper.selectimage(id);
+        BrainrotImage ent = postMapper.selectimage(id);
         if (ent == null || ent.getImage() == null) {
             return ResponseEntity.notFound().build();
         }
@@ -101,7 +96,7 @@ public class ImageController {
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> postList() {
         try {
-            List<PostDto> posts = imageMapper.selectAllPosts();
+            List<PostDto> posts = postMapper.selectAllPosts();
 
             // Base64 인코딩
             List<PostDto> encodedPosts = posts.stream().map(post -> {
@@ -128,7 +123,7 @@ public class ImageController {
     public ResponseEntity<ApiResponse> commentList(@RequestBody Map<String, Integer> request) {
         try {
 
-            List<Comment> comments = imageMapper.selectAllComments(request.get("postId"));
+            List<Comment> comments = postMapper.selectAllComments(request.get("postId"));
             ApiResponse response = new ApiResponse("000", "댓글 불러오기");
             response.getResultData().put("comments", comments);
 
@@ -146,10 +141,11 @@ public class ImageController {
     public ResponseEntity<ApiResponse> commentSubmit(@RequestBody Comment comment) {
         try {
             System.out.println("Received comment : " + comment);
-            imageMapper.insertComment(comment);
+            postMapper.insertComment(comment);
             ApiResponse response = new ApiResponse("000", "댓글 추가 성공");
             response.getResultData().put("postId", comment.getPostId());
             response.getResultData().put("userId", comment.getUserId());
+            response.getResultData().put("commentId", comment.getCommentId());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,17 +158,15 @@ public class ImageController {
     public ResponseEntity<ApiResponse> toggleLovePost(@RequestBody Likecheck likecheck) {
         try {
             System.out.println("Received post : " + likecheck);
-            
-            boolean existsLove = imageMapper.existsLove(likecheck);
+
+            boolean existsLove = postMapper.existsLove(likecheck);
 
             if (existsLove) {
-                imageMapper.deleteLove(likecheck);
+                postMapper.deleteLove(likecheck);
             } else {
-                imageMapper.insertLove(likecheck);            
+                postMapper.insertLove(likecheck);
             }
 
-            
-      
             ApiResponse response = new ApiResponse("000", "토글 하트 성공");
             response.getResultData().put("postId", likecheck.getPostId());
             response.getResultData().put("liked", !existsLove);

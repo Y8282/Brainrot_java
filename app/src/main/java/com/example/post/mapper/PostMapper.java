@@ -1,17 +1,17 @@
-package com.example.image.mapper;
+package com.example.post.mapper;
 
 import java.util.*;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.image.Entity.BrainrotImage;
-import com.example.image.Entity.Comment;
-import com.example.image.Entity.Likecheck;
-import com.example.image.Entity.Post;
-import com.example.image.Entity.PostDto;
+import com.example.post.Entity.BrainrotImage;
+import com.example.post.Entity.Comment;
+import com.example.post.Entity.Likecheck;
+import com.example.post.Entity.Post;
+import com.example.post.Entity.PostDto;
 
 @Mapper
-public interface ImageMapper {
+public interface PostMapper {
 
     List<PostDto> selectAllPosts();
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.image.mapper.ImageMapper">
+<mapper namespace="com.example.post.mapper.PostMapper">
 
-    <select id="selectAllPosts" resultType="com.example.image.Entity.PostDto">
+    <select id="selectAllPosts" resultType="com.example.post.Entity.PostDto">
         <![CDATA[
              SELECT 
                  a.id,                             -- 글 ID
@@ -20,7 +20,7 @@
                 ]]>
     </select>
 
-    <select id = "selectAllComments" resultType="com.example.image.Entity.Comment">
+    <select id = "selectAllComments" resultType="com.example.post.Entity.Comment">
         <![CDATA[
              WITH RECURSIVE comment_tree                   -- 재귀 함수  (나중에 성능 느려지면 업데이트)
                 (
@@ -67,26 +67,26 @@
             ]]>
     </select>
 
-    <select id ="selectimage" resultType="com.example.image.Entity.BrainrotImage">
+    <select id ="selectimage" resultType="com.example.post.Entity.BrainrotImage">
         <![CDATA[
             SELECT * FROM brainrot_image where id = #{id};
         ]]>
     </select>
 
-    <select id = "selectAllComment" resultType = "com.example.image.Entity.Comment">
+    <select id = "selectAllComment" resultType = "com.example.post.Entity.Comment">
         <![CDATA[
             SELECT * FROM comment where postId = #{postId};
         ]]>
     </select>
 
-    <insert id = "insertComment" parameterType="com.example.image.Entity.Comment" useGeneratedKeys= "true" keyProperty="id">
+    <insert id = "insertComment" parameterType="com.example.post.Entity.Comment" useGeneratedKeys= "true" keyProperty="id">
         <![CDATA[
             INSERT INTO comment (postId , userId , content , commentId )
             VALUES (#{postId}, #{userId} , #{content} , #{commentId} )
         ]]>
     </insert>
 
-    <select id = "findParentCommentByUserId" resultType="com.example.image.Entity.Comment">
+    <select id = "findParentCommentByUserId" resultType="com.example.post.Entity.Comment">
         <![CDATA[
             SELECT id , postId , userId , content , commentId , created_at AS createdAt , updated_at AS updatedAt
             FROM comment
@@ -96,14 +96,14 @@
         ]]>
     </select>
     
-    <insert id="insertLove" parameterType="com.example.image.Entity.Likecheck">
+    <insert id="insertLove" parameterType="com.example.post.Entity.Likecheck">
         <![CDATA[
             INSERT INTO like_check (userId , postId)
             VALUES (#{userId} , #{postId})
         ]]>
     </insert>
 
-    <select id="existsLove" parameterType="com.example.image.Entity.Likecheck" resultType="boolean">
+    <select id="existsLove" parameterType="com.example.post.Entity.Likecheck" resultType="boolean">
         <![CDATA[
             SELECT COUNT(1) > 0
             FROM like_check
@@ -112,7 +112,7 @@
         ]]>
     </select>
 
-    <delete id="deleteLove" parameterType="com.example.image.Entity.Likecheck">
+    <delete id="deleteLove" parameterType="com.example.post.Entity.Likecheck">
         <![CDATA[
             DELETE FROM like_check 
             WHERE userId = #{userId}

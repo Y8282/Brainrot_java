@@ -1,4 +1,4 @@
-package com.example.image.Entity;
+package com.example.post.Entity;
 
 import lombok.Data;
 
