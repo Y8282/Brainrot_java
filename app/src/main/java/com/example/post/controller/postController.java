@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.post.Entity.BrainrotImage;
@@ -38,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*") // Cors 추가하기 귀찮아서 일단 이렇게만 해 놓음.
-public class ImageController {
+public class postController {
     private final PostMapper postMapper;
     // private final ImageService imageService;
 
@@ -93,9 +94,10 @@ public class ImageController {
     }
 
     // 글 전체 list
-    @GetMapping("/list")
-    public ResponseEntity<ApiResponse> postList() {
+    @PostMapping("/list")
+    public ResponseEntity<ApiResponse> postList(@RequestBody Map<String, String> request) {
         try {
+            String email = request.get("userId");
             List<PostDto> posts = postMapper.selectAllPosts();
 
             // Base64 인코딩
@@ -104,6 +106,10 @@ public class ImageController {
                     String encoded = Base64.getEncoder().encodeToString(post.getImage().getBytes());
                     post.setImage(encoded);
                 }
+                // 유저 글 마다 하트..
+                System.out.print("유저 아이디 : " + email + "postId : " + post.getId());
+                boolean liked = postMapper.existsLove(new Likecheck(email, post.getId()));
+                post.setLiked(liked);
                 return post;
             }).collect(Collectors.toList());
             encodedPosts.forEach(post -> System.out.println("Post : " + post));
@@ -146,6 +152,22 @@ public class ImageController {
             response.getResultData().put("postId", comment.getPostId());
             response.getResultData().put("userId", comment.getUserId());
             response.getResultData().put("commentId", comment.getCommentId());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse("500", "서버 오류 : " + e.getStackTrace()));
+        }
+    }
+
+    // 댓글 삭제
+    @PostMapping("/commentdelete")
+    public ResponseEntity<ApiResponse> commentDelete(@RequestBody Comment comment) {
+        try {
+            System.out.println("Received comment : " + comment);
+            postMapper.commentDelete(comment);
+            ApiResponse response = new ApiResponse("000", "댓글 삭제 성공");
+            response.getResultData().put("userId", comment.getUserId());
+            response.getResultData().put("id", comment.getId());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();

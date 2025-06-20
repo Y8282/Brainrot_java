@@ -15,6 +15,7 @@ public class PostDto {
     private String author;
     private String image;
     private String username;
+    private boolean liked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

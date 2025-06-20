@@ -17,6 +17,7 @@
              FROM post a
              LEFT JOIN brainrot_image b ON b.id = a.imgId 
              LEFT JOIN users c ON c.email = a.author
+
                 ]]>
     </select>
 
@@ -86,6 +87,14 @@
         ]]>
     </insert>
 
+    <delete id = "commentDelete" parameterType="com.example.post.Entity.Comment">
+        <![CDATA[
+            DELETE FROM comment
+            WHERE userId = #{userId}
+            AND   id     = #{id}
+        ]]>
+    </delete>
+
     <select id = "findParentCommentByUserId" resultType="com.example.post.Entity.Comment">
         <![CDATA[
             SELECT id , postId , userId , content , commentId , created_at AS createdAt , updated_at AS updatedAt
@@ -105,10 +114,10 @@
 
     <select id="existsLove" parameterType="com.example.post.Entity.Likecheck" resultType="boolean">
         <![CDATA[
-            SELECT COUNT(1) > 0
-            FROM like_check
+            SELECT EXISTS(
+            SELECT 1 FROM like_check
             WHERE userId = #{userId}
-            AND   postId = #{postId}
+            AND   postId = #{postId})
         ]]>
     </select>
 

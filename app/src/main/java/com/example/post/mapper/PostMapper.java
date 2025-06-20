@@ -21,6 +21,8 @@ public interface PostMapper {
 
     void insertComment(Comment comment);
 
+    void commentDelete(Comment comment);
+
     Comment findParentCommentByUserId(String userId , int postId);
 
     void insertLove(Likecheck Likecheck);
@@ -28,4 +30,6 @@ public interface PostMapper {
     boolean existsLove(Likecheck Likecheck);
 
     void deleteLove(Likecheck Likecheck);
+
+    
 }
