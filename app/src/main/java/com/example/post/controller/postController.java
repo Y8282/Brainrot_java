@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.post.Entity.BrainrotImage;
 import com.example.post.Entity.Comment;
 import com.example.post.Entity.Likecheck;
+import com.example.post.Entity.Post;
 // import com.example.image.service.ImageService;
 import com.example.login.model.ApiResponse;
 import com.example.post.Entity.PostDto;
 import com.example.post.mapper.PostMapper;
+import com.example.post.service.PostService;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*") // Cors 추가하기 귀찮아서 일단 이렇게만 해 놓음.
 public class postController {
     private final PostMapper postMapper;
+    private final PostService postService;
     // private final ImageService imageService;
 
     // @PostMapping("/generate")
@@ -99,6 +102,7 @@ public class postController {
         try {
             String email = request.get("userId");
             List<PostDto> posts = postMapper.selectAllPosts();
+            List<Post> myPosts = postMapper.selectMyPosts(email);
 
             // Base64 인코딩
             List<PostDto> encodedPosts = posts.stream().map(post -> {
@@ -114,8 +118,28 @@ public class postController {
             }).collect(Collectors.toList());
             encodedPosts.forEach(post -> System.out.println("Post : " + post));
 
+
             ApiResponse response = new ApiResponse("000", "글 불러오기");
             response.getResultData().put("posts", posts);
+            response.getResultData().put("mypost",myPosts);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ApiResponse("500", "서버 오류 : " +
+                    e.getStackTrace()));
+        }
+    }
+
+    // 내 게시물 가져오기
+    @PostMapping("/mypost")
+    public ResponseEntity<ApiResponse> mypost(@RequestBody PostDto post) {
+        try {
+            List<Post> result = postService.getMyPosts(post.getAuthor());
+            System.out.println("Received post : " + post);
+
+            ApiResponse response = new ApiResponse("000", " 내 글 가져오기");
+            response.getResultData().put("mypost", result);
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();

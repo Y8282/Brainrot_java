@@ -14,6 +14,8 @@ import com.example.post.Entity.PostDto;
 public interface PostMapper {
 
     List<PostDto> selectAllPosts();
+    
+    List<Post> selectMyPosts(String email);
 
     BrainrotImage selectimage(Long id);
 
@@ -31,5 +33,4 @@ public interface PostMapper {
 
     void deleteLove(Likecheck Likecheck);
 
-    
 }

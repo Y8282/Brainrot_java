@@ -21,6 +21,11 @@
                 ]]>
     </select>
 
+    <select id="selectMyPosts" resultType="com.example.post.Entity.PostDto">
+        <![CDATA[
+             SELECT * FROM post WHERE author = #{author}]]>
+    </select>
+
     <select id = "selectAllComments" resultType="com.example.post.Entity.Comment">
         <![CDATA[
              WITH RECURSIVE comment_tree                   -- 재귀 함수  (나중에 성능 느려지면 업데이트)
