@@ -19,7 +19,6 @@ class imageAI:
         각 head, body, arm, legs, tail에 무조건 적힌대로 이루어지고 include 내용을 전부 
         충족하며 초현실적이고 하브리드적인 생물을 만들어야하며 생물이 이미지 밖으로 나가서 잘리면 안 돼
         Head는 눈이나 입이 없는 사물이면 직접 눈, 입, 코, 등 사람의 표정이 있게끔 만들어
-        쌍꺼풀있고 피곤에 찌들어 있으며 사무실에서 일하는 모습으로 만들어
         {add if add else add}:
         - Head: {head}
         - Body: {body}
