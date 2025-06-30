@@ -44,20 +44,6 @@ import lombok.RequiredArgsConstructor;
 public class postController {
     private final PostMapper postMapper;
     private final PostService postService;
-    // private final ImageService imageService;
-
-    // @PostMapping("/generate")
-    // public ResponseEntity<ApiResponse> generateImage(@RequestBody ImageRequest
-    // request) {
-    // String imageUrl = imageService.generateImage(request.getSearchTerm());
-    // if (imageUrl != null) {
-    // ApiResponse response = new ApiResponse("000", "Image generated");
-    // response.getResultData().put("requestId", request.getRequestId());
-    // response.getResultData().put("imageUrl", imageUrl);
-    // return ResponseEntity.ok(response);
-    // }
-    // return ResponseEntity.ok(new ApiResponse("500", "Failed to generate image"));
-    // }
 
     // 이미지 가져오기 -> image.network
     @GetMapping(value = "/raw/{id}", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
@@ -131,11 +117,10 @@ public class postController {
     }
 
     // 내 게시물 가져오기
-    @PostMapping("/mypost")
-    public ResponseEntity<ApiResponse> mypost(@RequestBody PostDto post) {
-        try {
+
+            {
             List<Post> result = postService.getMyPosts(post.getAuthor());
-            System.out.println("Received post : " + post);
+            System.out.println("Received post : "  + post);
 
             ApiResponse response = new ApiResponse("000", " 내 글 가져오기");
             response.getResultData().put("mypost", result);

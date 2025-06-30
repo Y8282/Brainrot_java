@@ -1,11 +1,10 @@
 package com.example.login.mapper;
 
-import com.example.image.Entity.Post;
-import com.example.login.Entity.User;
-
-import java.util.*;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+
+import com.example.login.Entity.User;
 
 @Mapper
 public interface LoginMapper {

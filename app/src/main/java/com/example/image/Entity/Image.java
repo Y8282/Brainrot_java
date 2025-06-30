@@ -1,4 +1,4 @@
-package com.example.post.Entity;
+package com.example.image.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class Image {
     private Long id;
-    private String fileName;
-    private String filePath;
+    private byte[] image;
+
 }

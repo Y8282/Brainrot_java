@@ -1,12 +1,14 @@
 # requirements:
 # pip install fastapi uvicorn requests PyMySQL
 
+import base64
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, HttpUrl
 import requests
 import pymysql
 import os
 from dotenv import load_dotenv
+from typing import Optional
 
 from imageAI import imageAI
 
@@ -16,11 +18,11 @@ load_dotenv()
 class ImageRequest(BaseModel):
     head: str
     body: str
-    arms: str
+    arm: str
     legs: str
-    tail: str
-    add: str
-    drs: str
+    tail: Optional[str] = None
+    add: Optional[str] = None
+    drs: Optional[str] = None
 
 
 # 환경변수로 DB 정보 설정
@@ -50,7 +52,7 @@ async def save_image(request: ImageRequest):
     ai = imageAI(
         request.head,
         request.body,
-        request.arms,
+        request.arm,
         request.legs,
         request.tail,
         request.add,
@@ -70,7 +72,12 @@ async def save_image(request: ImageRequest):
         connection.rollback()
         raise HTTPException(status_code=500, detail=f"DB 저장 실패: {e}")
 
-    return {"success": True, "id": image_id}
+    b64 = base64.b64encode(img_bytes).decode("utf-8")
+    return {
+        "responseCode": "000",
+        "id": image_id,
+        "imageBase64": b64,
+    }
 
 
 if __name__ == "__main__":
